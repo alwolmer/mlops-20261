@@ -1,0 +1,11 @@
+cliente_id,nome,data_cadastro,idade,renda_mensal,estado_civil,numero_dependentes,valor_emprestimo,score_credito,ultima_compra,canal_aquisicao,tempo_emprego_anos,inadimplente
+1,Ana,2021-03-10,29,"3500",Solteiro,0,10000,720,2023-10-01,Instagram,3,0
+2,Carlos,2020-07-22,45,"8000",Casado,2,20000,680,2023-06-15,Google,15,0
+3,Mariana,2022-01-05,, "4500",Divorciado,1,15000,590,2023-11-20,Facebook,5,1
+4,João,2019-11-30,38,"?",Casado,3,30000,610,2023-01-10,Indicação,10,1
+5,Paula,2023-05-14,26,"2800",Solteiro,0,5000,730,,Instagram,1,0
+6,Ricardo,2021-09-18,52,"12000",Casado,2,40000,540,2023-08-02,Google,25,1
+7,Beatriz,2022-12-01,31,"3900",Solteiro,,12000,710,2023-09-12,Facebook,4,0
+8,Fernando,2020-04-25,47,"9500",Casado,2,25000,580,2023-05-19,Indicação,20,1
+9,Juliana,2023-02-10,34,"4100",Solteiro,1,8000,690,2023-12-01,Instagram,6,0
+10,Roberto,2018-08-09,60,"15000",Casado,4,50000,520,2022-12-15,Google,30,1

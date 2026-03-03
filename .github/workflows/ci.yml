@@ -9,36 +9,43 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        python-version: ["3.9", "3.10", "3.11"]
+    env:
+      LOCAL_IMAGE_NAME: mlops-20261:ci
+      DOCKERHUB_IMAGE_NAME: ${{ secrets.DOCKERHUB_USER }}/mlops-20261
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
-        python-version: ${{ matrix.python-version }}
+        python-version: "3.13"
+
+    - name: Set up uv
+      uses: astral-sh/setup-uv@v5
+      with:
+        enable-cache: true
 
     - name: Install dependencies
       run: make install
 
-    - name: Lint
+    - name: Lint and format check
       run: make lint
 
     - name: Test
       run: make test
     
     - name: Build Docker image
-      run: docker build -t ${{ secrets.DOCKERHUB_USER }}/mlops-aula-01 .
+      run: docker build -t $LOCAL_IMAGE_NAME .
+
+    - name: Tag image for DockerHub
+      run: docker tag $LOCAL_IMAGE_NAME $DOCKERHUB_IMAGE_NAME
 
     - name: Login to DockerHub
-      uses: docker/login-action@v2
+      uses: docker/login-action@v3
       with:
         username: ${{ secrets.DOCKERHUB_USER }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
 
     - name: Push image
-      run: docker push ${{ secrets.DOCKERHUB_USER }}/mlops-aula-01
+      run: docker push $DOCKERHUB_IMAGE_NAME

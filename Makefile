@@ -1,21 +1,30 @@
-.PHONY: help install lint test clean all
+.PHONY: install lint format test clean all pipeline-train pipeline-infer
 
 # Variables
 PYTHON := python3
-PIP := pip3
+UV := uv
+UV_RUN := $(UV) run
 DOCKER_USERNAME ?= $(shell echo $$DOCKER_USERNAME)
 IMAGE_NAME := $(DOCKER_USERNAME)/mlops-project
+PIPELINE_INPUT ?= lifecycle/data/raw/risco_credito.csv
+PIPELINE_ARTIFACTS ?= lifecycle/data/processed
+PIPELINE_OUTPUT ?= lifecycle/data/processed/predictions.csv
 
 install:
-	$(PIP) install --upgrade pip
-	$(PIP) install -r requirements.txt
+	$(UV) sync --frozen --dev --no-install-project
 
 lint:
-	$(PYTHON) -m flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-	$(PYTHON) -m flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+	$(UV_RUN) ruff check . --fix
+	$(UV_RUN) ruff format .
 
 test:
-	$(PYTHON) -m pytest -v
+	$(UV_RUN) pytest -v
+
+pipeline-train:
+	$(UV_RUN) python -m lifecycle train --input $(PIPELINE_INPUT) --artifacts $(PIPELINE_ARTIFACTS)
+
+pipeline-infer:
+	$(UV_RUN) python -m lifecycle infer --input $(PIPELINE_INPUT) --artifacts $(PIPELINE_ARTIFACTS) --output $(PIPELINE_OUTPUT)
 
 clean:
 	find . -type f -name '*.pyc' -delete

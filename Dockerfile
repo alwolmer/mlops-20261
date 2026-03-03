@@ -1,10 +1,16 @@
-FROM python:3.10-slim
+FROM python:3.13-slim
+
+ENV UV_LINK_MODE=copy \
+    UV_PROJECT_ENVIRONMENT=/app/.venv \
+    PATH="/app/.venv/bin:${PATH}"
 
 WORKDIR /app
 
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir uv
+
+COPY pyproject.toml uv.lock ./
+RUN uv sync --frozen --no-dev --no-install-project
 
 COPY . .
 
-CMD ["python", "hello.py"]
+CMD ["python", "-m", "lifecycle", "train", "--input", "lifecycle/data/raw/risco_credito.csv", "--artifacts", "lifecycle/data/processed"]
